@@ -6,18 +6,14 @@
 /*   By: blevrel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/12 11:25:16 by blevrel           #+#    #+#             */
-/*   Updated: 2022/12/13 17:26:37 by blevrel          ###   ########.fr       */
+/*   Updated: 2023/01/10 16:59:52 by blevrel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#pragma once
 #include <iostream>
 
 class	Bureaucrat
 {
-
-private:
-
-	std::string const	name;
-	int					grade;
 
 public:
 
@@ -61,6 +57,12 @@ public:
 		~GradeTooLowException(void) throw();
 
 	};
+
+private:
+
+	std::string const	_name;
+	int					_grade;
+
 };
 
 std::ostream & operator<<(std::ostream & os, const Bureaucrat & other);

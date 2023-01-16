@@ -6,14 +6,15 @@
 /*   By: blevrel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/12 11:26:04 by blevrel           #+#    #+#             */
-/*   Updated: 2022/12/13 17:31:26 by blevrel          ###   ########.fr       */
+/*   Updated: 2023/01/11 09:25:12 by blevrel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "Bureaucrat.hpp"
 
-Bureaucrat::Bureaucrat(void) : name("Default_name")
+Bureaucrat::Bureaucrat(void)
+	:	_name("Default_name"),
+		_grade(150)
 {
-	this->grade = 150;
 	std::cout << "Bureaucrat default constructor called, grade automatically set to 150." << std::endl;
 }
 
@@ -27,19 +28,21 @@ Bureaucrat::GradeTooLowException::GradeTooLowException(void) throw()
 {
 }
 
-Bureaucrat::Bureaucrat(const Bureaucrat & other) : name(other.getName())
+Bureaucrat::Bureaucrat(const Bureaucrat & other)
+	:	_name(other.getName()),
+		_grade(other.getGrade())
 {
-	this->grade = other.getGrade();
 	std::cout << "Bureaucrat copy constructor called." << std::endl;
 }
 
-Bureaucrat::Bureaucrat(std::string _name, int _grade) : name(_name)
+Bureaucrat::Bureaucrat(std::string name, int grade)
+	:	_name(name),
+		_grade(grade)
 {
-	if (_grade > 150)
+	if (grade > 150)
 		throw Bureaucrat::GradeTooLowException();
-	else if (_grade < 1)
+	else if (grade < 1)
 		throw Bureaucrat::GradeTooHighException();
-	this->grade = _grade;
 	std::cout << "Bureaucrat constructor called." << std::endl;
 }
 
@@ -59,36 +62,41 @@ Bureaucrat::GradeTooLowException::~GradeTooLowException(void) throw()
 
 std::string	Bureaucrat::getName(void) const
 {
-	return (this->name);
+	return (this->_name);
 }
 
 int	Bureaucrat::getGrade(void) const
 {
-	return (this->grade);
+	return (this->_grade);
 }
 
 void	Bureaucrat::check_grade(int	from) const
 {
-	if (this->grade == 150 && from == 1)
+	if (this->_grade == 150 && from == 1)
 		throw Bureaucrat::GradeTooLowException();
-	else if (this->grade == 1 && from == 0)
+	else if (this->_grade == 1 && from == 0)
 		throw Bureaucrat::GradeTooHighException();
 }
 
 void	Bureaucrat::incrementGrade(void)
 {
 	this->check_grade(0);
-	this->grade--;
-	std::cout << this->name << " just got upgraded from grade "
-	<< this->grade + 1 << " to " << this->grade << "." << std::endl;
+	this->_grade--;
+	std::cout << this->_name << " just got upgraded from grade "
+	<< this->_grade + 1 << " to " << this->_grade << "." << std::endl;
 }
 
 void	Bureaucrat::decrementGrade(void)
 {
 	this->check_grade(1);
-	this->grade++;
-	std::cout << this->name << " just got downgraded from grade "
-	<< this->grade - 1 << " to " << this->grade << "." << std::endl;
+	this->_grade++;
+	std::cout << this->_name << " just got downgraded from grade "
+	<< this->_grade - 1 << " to " << this->_grade << "." << std::endl;
+}
+
+void	Bureaucrat::signForm(Form & other)
+{
+	other.beSigned(*this);
 }
 
 const char	*Bureaucrat::GradeTooHighException::what(void) const throw()
@@ -104,7 +112,11 @@ const char	*Bureaucrat::GradeTooLowException::what(void) const throw()
 Bureaucrat & Bureaucrat::operator=(const Bureaucrat & other)
 {
 	std::cout << "Impossible to copy name because it is declared as const." << std::endl;
-	this->grade = other.getGrade();
+	if (this->_grade > 150)
+		throw Bureaucrat::GradeTooLowException();
+	if (this->_grade < 1)
+		throw Bureaucrat::GradeTooHighException();
+	this->_grade = other.getGrade();
 	std::cout << "Bureaucrat assignment operator called." << std::endl;
 	return (*this);
 }

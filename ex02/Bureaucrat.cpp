@@ -6,7 +6,7 @@
 /*   By: blevrel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/12 11:26:04 by blevrel           #+#    #+#             */
-/*   Updated: 2023/01/10 17:06:31 by blevrel          ###   ########.fr       */
+/*   Updated: 2023/01/11 09:31:17 by blevrel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "Bureaucrat.hpp"
@@ -92,6 +92,16 @@ void	Bureaucrat::decrementGrade(void)
 	this->_grade++;
 	std::cout << this->_name << " just got downgraded from grade "
 	<< this->_grade - 1 << " to " << this->_grade << "." << std::endl;
+}
+
+void	Bureaucrat::signForm(AForm & other)
+{
+	other.beSigned(*this);
+}
+
+void	Bureaucrat::executeForm(AForm const & form) const
+{
+	form.execute(*this);
 }
 
 const char	*Bureaucrat::GradeTooHighException::what(void) const throw()

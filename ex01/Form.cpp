@@ -6,15 +6,17 @@
 /*   By: blevrel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 15:38:10 by blevrel           #+#    #+#             */
-/*   Updated: 2022/12/13 18:29:46 by blevrel          ###   ########.fr       */
+/*   Updated: 2023/01/12 13:41:18 by blevrel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "Form.hpp"
 
 Form::Form(void)
-	: name("Default_name"), sign_req_grade(150), exec_req_grade(150)
+	:	_name("Default_name"),
+		_is_signed(false),
+		_sign_req_grade(150),
+		_exec_req_grade(150)
 {
-	this->is_signed = false;
 	std::cout << "Form default constructor called, all grade related values set to 150 by default." << std::endl;
 }
 
@@ -29,23 +31,23 @@ Form::GradeTooLowException::GradeTooLowException(void) throw()
 }
 
 Form::Form(const Form & other)
-	: name(other.getName()),
-	is_signed(other.getIsSigned()),
-	sign_req_grade(other.getSignReqGrade()),
-	exec_req_grade(other.getExecReqGrade())
+	:	_name(other.getName()),
+		_is_signed(other.getIsSigned()),
+		_sign_req_grade(other.getSignReqGrade()),
+		_exec_req_grade(other.getExecReqGrade())
 {
 	std::cout << "Form copy constructor called" << std::endl;
 }
 
-Form::Form(std::string _name, unsigned int _sign_req_grade, unsigned int _exec_req_grade)
-	: name(_name),
-	is_signed(false),
-	sign_req_grade(_sign_req_grade),
-	exec_req_grade(_exec_req_grade)
+Form::Form(std::string name, int sign_req_grade, int exec_req_grade)
+	:	_name(name),
+		_is_signed(false),
+		_sign_req_grade(sign_req_grade),
+		_exec_req_grade(exec_req_grade)
 {
-	if (_sign_req_grade > 150 || _exec_req_grade > 150)
+	if (sign_req_grade > 150 || exec_req_grade > 150)
 		throw Form::GradeTooLowException();
-	else if (_sign_req_grade < 1 || _exec_req_grade < 1)
+	else if (sign_req_grade < 1 || exec_req_grade < 1)
 		throw Form::GradeTooHighException();
 	std::cout << "Form constructor called." << std::endl;
 }
@@ -65,22 +67,40 @@ Form::GradeTooLowException::~GradeTooLowException(void) throw()
 
 std::string const &	Form::getName(void) const
 {
-	return (this->name);
+	return (this->_name);
 }
 
 bool 	Form::getIsSigned(void) const
 {
-	return (this->is_signed);
+	return (this->_is_signed);
 }
 
-unsigned int const &	Form::getSignReqGrade(void) const
+int const &	Form::getSignReqGrade(void) const
 {
-	return (this->sign_req_grade);
+	return (this->_sign_req_grade);
 }
 
-unsigned int const &	Form::getExecReqGrade(void) const
+int const &	Form::getExecReqGrade(void) const
 {
-	return (this->exec_req_grade);
+	return (this->_exec_req_grade);
+}
+
+void	Form::beSigned(Bureaucrat & other)
+{
+	if (this->_is_signed == true && other.getGrade() <= this->getSignReqGrade())
+		std::cout << other.getName() << " could not sign " << this->getName()
+		<< " because it's already signed." << std::endl;
+	else if (other.getGrade() <= this->getSignReqGrade())
+	{
+		this->_is_signed = true;
+		std::cout << other.getName() << " signed " << this->_name << "." << std::endl;
+	}
+	else
+	{
+		std::cout << "\033[35m" << other.getName() << " could not sign " << this->getName()
+		<< " because grade must be at least " << this->getSignReqGrade() << "\033[0m." << std::endl;
+		throw Form::GradeTooLowException();
+	}
 }
 
 const char	*Form::GradeTooHighException::what(void) const throw()
@@ -95,7 +115,7 @@ const char	*Form::GradeTooLowException::what(void) const throw()
 
 Form & Form::operator=(const Form & other)
 {
-	this->is_signed = other.getIsSigned();
+	this->_is_signed = other.getIsSigned();
 	std::cout << "Could not copy name and grade requirements because they are declared as const. Only IsSigned was copied" << std::endl;
 	std::cout << "Form assignment operator called." << std::endl;
 	return (*this);

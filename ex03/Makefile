@@ -1,8 +1,12 @@
-NAME = ex01
+NAME = ex03
 
-SRCS =	main.cpp		\
-		Bureaucrat.cpp	\
-		Form.cpp		\
+SRCS =	main.cpp					\
+		Bureaucrat.cpp				\
+		AForm.cpp					\
+		ShrubberyCreationForm.cpp	\
+		RobotomyRequestForm.cpp		\
+		PresidentialPardonForm.cpp	\
+		Intern.cpp					\
 		
 
 OBJS = ${SRCS:.cpp=.o}
